@@ -81,6 +81,11 @@ class CarAgent:
         # TODO: Explain what the following three lines of code are doing.
         #       What values are we trying to calculate and what impact does
         #       that data have on our overall project?
+        '''
+        This is a helper method to calculate the X and Y updated coordinates of the car. 
+        This is then used to help our car detect the track borders so it doesnt crash.
+        This updating of the coordinates is how our car continue to move forward.
+        '''
         dX = math.cos(math.radians(360 - (self.angle + degree))) * length
         dY = math.sin(math.radians(360 - (self.angle + degree))) * length
         return int(self.center[0] + dX), int(self.center[1] + dY)
@@ -92,7 +97,8 @@ class CarAgent:
         #       of basic algebra to complete the Euclidean distance
         #       function algorithm below. (HINT: It's the basic 
         #       distance function you learn in algebra!)
-        return None
+        return math.sqrt((ΔX)**2)+((ΔY)**2)
+
 
     def check_radar(self, degree, environment):
         """ Major method to check and validate positions of car respective to track-path borders. """
@@ -113,6 +119,11 @@ class CarAgent:
         # TODO: This is a deceptively complex algorithm at play. Explain
         #       what information is being created and iterated across and 
         #       why this matters for our reinforcement learning algorithm.
+        """
+        This is used to give us the 4 corners of the car. This is important because while we are training
+        this model we need to make sure it is not crashing into the track borders. This calls on the function 
+        above to update the coordinates of the car to see if these corners are touching the track borders.
+        """
         TOP_LEFT_OFFSET, TOP_RIGHT_OFFSET, BOTTOM_LEFT_OFFSET, BOTTOM_RIGHT_OFFSET = 30, 150, 210, 330
         corners = list()
         for offset in [TOP_LEFT_OFFSET, TOP_RIGHT_OFFSET, BOTTOM_LEFT_OFFSET, BOTTOM_RIGHT_OFFSET]:
@@ -152,6 +163,12 @@ class CarAgent:
         # TODO: Our `actions` object is a deceptively important data
         #       structures. Explain what this object represents and 
         #       how this data is interpreted/used by our learning algorithm.
+        
+        """
+        This method is looking at the sensors/radar of the car and the actions per iteration.
+        The reason its dividing the radar by 30 is to get distance from the center of the car to the radars. 
+        This can help us see how each action is affecting the car.
+        """
         radars, actions = self.radars, [0, 0, 0, 0, 0]
         for iteration, radar in enumerate(radars):
             actions[iteration] = int(radar[1] / 30)
@@ -166,6 +183,12 @@ class CarAgent:
         # TODO: Explain how our rewarding schema is expressly calculated.
         # TODO: Are there any other/better ways of selecting rewards for
         #       our reinforcement algorithm?
+        '''
+        We are rewarding our car for the distance it has traveled.
+        I think another way would be how fast this car can travel and how far it can go.
+        Its like a drive to LA from SF. GPS says it will take 6 hours to get there, but
+        if we can go faster and get there in less time, we will be rewarded.
+        '''
         return self.distance / (self.agent_parameters["X"] / 2)
 
     def rotate_center(self, image, angle):

@@ -52,8 +52,15 @@ def racecar_simulator(genomes, configurations):
     # Iteratively train agent using Deep RL
     for iteration, genome in genomes:
         # TODO: What type of neural network is designed here? 
+        # This is a feed-forward neural network.
+        # a feedforward neural network is an artificial neural network wherein connections between the nodes do not form a cycle
+        # its being pushed forward and everything is connected 
+        
         # TODO: Can we utilize more advanced neural networks instead?
         # TODO: What is the tradeoff of using higher-order and/or lower-order networks? 
+        # I do think we could use a more advanced style of NN. For example the one we used in the previous project. (Snake Bot and Taxi)
+        # Using a lower-order networks have the tradeoff of being over fit for this specific problem.
+        # the biggest benefit of using the higher-order networks is that we can add some randomness to the network.
         model = neat.nn.FeedForwardNetwork.create(genome, configurations)
         
         # Save instantiated models with (re)set genetic training counter
@@ -71,7 +78,7 @@ def racecar_simulator(genomes, configurations):
     alive_font = pygame.font.SysFont("Arial", 20)
 
     # Read in environment image map
-    environment = pygame.image.load("assets/environments/map01.png").convert()
+    environment = pygame.image.load("assets\environments\JordanMap.png").convert()
 
     # Iterate generation counter as global variable 
     global current_generation
@@ -88,9 +95,11 @@ def racecar_simulator(genomes, configurations):
         for iteration, agent in enumerate(agents):
             output = models[iteration].activate(agent.get_actions())
             choice = output.index(max(output))
-            # TODO: Explain how policy selection works here – how are choices selected
-            #       across our reinforcement learning agent? What do those choices
-            #       actually do for our game-playing bot? 
+            # TODO: Explain how policy selection works here – how are choices selected across our reinforcement learning agent? 
+            # TODO: What do those choices actually do for our game-playing bot?
+            # our policy selector is looking at the cars choice. If choice is 0, then we are going to go left. if choice is 1, then we are going to go right. 
+            # if choice is 2, then we are going to go straight and slow down. else speed up.
+            # What this means is the state of our car is represented as the output, if it sees one of these values it will correct it. 
             if choice == 0:
                 agent.angle += 10
             elif choice == 1:
@@ -102,8 +111,10 @@ def racecar_simulator(genomes, configurations):
                 agent.speed += 2
 
         # Check if RL Agent is alive and optimize rewarding schema
-        # TODO: Explain how the rewards are selected here – how is the 
-        #       rewarding schema related to the model's training fitness?
+        # TODO: Explain how the rewards are selected here –  
+        # TODO: How is the rewarding schema related to the model's training fitness?
+        # This reward system is based on if the agent is alive or not. If the agent is alive.
+        # This is also taking into consideration the distance the agent has traveled looking for high fitness.
         still_alive = 0
         for iteration, agent in enumerate(agents):
             if agent.is_alive():
@@ -143,7 +154,7 @@ def racecar_simulator(genomes, configurations):
 
         pygame.display.flip(); clock.tick(60)
 
-# Run code
+# Run code 
 if __name__ == "__main__":
     PATH_CONFIG = "./config.txt"
     configurations = neat.config.Config(neat.DefaultGenome,

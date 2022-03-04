@@ -1,0 +1,10 @@
+This project was a ton of fun. I really felt that using NEAT along with 
+Pygame was a great way to learn a lot about reinforcement learning and 
+AI. I think for the purposes of this project NEAT was the right choice.
+The goal for this racer was to make a program that would learn to drive, 
+and with NEAT we had the ability to use track fitness per evolution 
+inspired algorithm. From my undestanding NEAT isnt able to work with 
+enviornments that are complex or challenging. Since we have a static map
+NEAT is doing just fine and pumping out generations. If we were to use another 
+similar program it would be the Q-Learning algorithm. Anything else would
+be overkill for this project since our project was very simple.
